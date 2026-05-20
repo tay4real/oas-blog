@@ -267,8 +267,8 @@ function getFooterHTML() {
         <div class="footer-links">
           <a href="https://oassolutions.com.ng">Home</a>
           <a href="https://okride.com.ng">OkRide</a>
-          <a href="https://oassolutions.com.ng/privacy.html">Privacy Policy</a>
-          <a href="https://oassolutions.com.ng/terms.html">Terms of Use</a>
+          <a href="https://oassolutions.com.ng/privacy">Privacy Policy</a>
+          <a href="https://oassolutions.com.ng/terms">Terms of Use</a>
           <a href="https://oassolutions.com.ng/#contact">Contact</a>
         </div>
       </div>
@@ -299,7 +299,7 @@ function generateIndexPage(posts) {
             <p class="post-card-summary">${summary}</p>
             <div class="post-card-footer">
               <span class="post-date">${formatDate(date)}</span>
-              <a href="/posts/${slug}.html" class="read-more">
+              <a href="/posts/${slug}" class="read-more">
                 Read more →
               </a>
             </div>
@@ -440,7 +440,7 @@ function generatePostPage(post, blocks) {
   <meta name="description" content="${summary}" />
   <meta property="og:title" content="${title}" />
   <meta property="og:description" content="${summary}" />
-  <meta property="og:url" content="https://blog.oassolutions.com.ng/posts/${slug}.html" />
+  <meta property="og:url" content="https://blog.oassolutions.com.ng/posts/${slug}" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="icon" type="image/svg+xml" href="https://oassolutions.com.ng/favicon.svg" />

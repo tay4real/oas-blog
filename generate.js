@@ -603,13 +603,13 @@ function generatePostPage(post, blocks) {
     <div class="share-section">
       <div class="share-title">Share this post</div>
       <div class="share-links">
-        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=https://blog.oassolutions.com.ng/posts/${slug}.html" target="_blank" class="share-link">
+        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=https://blog.oassolutions.com.ng/posts/${slug}" target="_blank" class="share-link">
           𝕏 Share on X
         </a>
-        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://blog.oassolutions.com.ng/posts/${slug}.html" target="_blank" class="share-link">
+        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://blog.oassolutions.com.ng/posts/${slug}" target="_blank" class="share-link">
           in Share on LinkedIn
         </a>
-        <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' — https://blog.oassolutions.com.ng/posts/' + slug + '.html')}" target="_blank" class="share-link">
+        <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' — https://blog.oassolutions.com.ng/posts/' + slug )}" target="_blank" class="share-link">
           💬 Share on WhatsApp
         </a>
       </div>

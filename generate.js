@@ -288,8 +288,10 @@ function generateIndexPage(posts) {
         const slug = getProperty(post, "Slug", "text");
         const date = getProperty(post, "Date", "date");
         const category = getProperty(post, "Category", "select");
+        const coverImage = getProperty(post, "Cover Image URL", "text");
         return `
           <article class="post-card">
+           ${coverImage ? `<div class="post-card-image"><img src="${coverImage}" alt="${title}" loading="lazy"></div>` : ""}
             ${category ? `<span class="post-category">${category}</span>` : ""}
             <h2 class="post-card-title">
               <a href="/posts/${slug}.html">${title}</a>
@@ -356,6 +358,17 @@ function generateIndexPage(posts) {
       transform: translateY(-4px);
       box-shadow: 0 16px 40px rgba(10,22,40,0.08);
       border-color: var(--blue-brand);
+    }
+
+    .post-card-image {
+        margin: -28px -28px 20px -28px;
+        border-radius: 16px 16px 0 0;
+        overflow: hidden;
+        height: 180px;
+    }
+    .post-card-image img {
+        width: 100%; height: 100%;
+        object-fit: cover;
     }
     .post-category {
       display: inline-block; font-size: 11px; font-weight: 600;
@@ -532,10 +545,28 @@ function generatePostPage(post, blocks) {
     }
     .share-link:hover { border-color: var(--blue-brand); color: var(--blue-brand); text-decoration: none; }
 
+    /* Comments */
+    .comments-section {
+      margin-top: 60px;
+      padding-top: 40px;
+      border-top: 1px solid var(--gray-light);
+    }
+    .comments-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px; font-weight: 700;
+      color: var(--blue-deep); margin-bottom: 8px;
+    }
+    .comments-subtitle {
+      font-size: 14px; color: var(--gray);
+      margin-bottom: 24px;
+    }
+
     /* More posts */
     .more-posts { margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--gray-light); }
     .more-posts-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--blue-deep); margin-bottom: 8px; }
     .more-posts-link { font-size: 15px; color: var(--blue-brand); font-weight: 500; }
+
+
   </style>
 </head>
 <body>
@@ -582,6 +613,27 @@ function generatePostPage(post, blocks) {
           💬 Share on WhatsApp
         </a>
       </div>
+    </div>
+
+    <!-- Comments -->
+    <div class="comments-section">
+      <h2 class="comments-title">Comments</h2>
+      <p class="comments-subtitle">Sign in with GitHub to leave a comment</p>
+      <script src="https://giscus.app/client.js"
+        data-repo="tay4real/oas-blog"
+        data-repo-id="R_kgDOSib5Pw"
+        data-category="Announcements"
+        data-category-id="DIC_kwDOSib5P84C9dFj"
+        data-mapping="pathname"
+        data-strict="0"
+        data-reactions-enabled="1"
+        data-emit-metadata="0"
+        data-input-position="bottom"
+        data-theme="light"
+        data-lang="en"
+        crossorigin="anonymous"
+        async>
+      </script>
     </div>
 
     <!-- More posts -->

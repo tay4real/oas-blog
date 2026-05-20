@@ -443,7 +443,7 @@ function generatePostPage(post, blocks) {
   <meta property="og:url" content="https://blog.oassolutions.com.ng/posts/${slug}.html" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="icon" type="image/svg+xml" href="https://oassolutions.com.ng/favicon.ico" />
+  <link rel="icon" type="image/svg+xml" href="https://oassolutions.com.ng/favicon.svg" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     ${getBaseStyles()}

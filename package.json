@@ -1,0 +1,11 @@
+{
+  "name": "oas-blog",
+  "version": "1.0.0",
+  "description": "OAS Ltd blog — powered by Notion, deployed to Cloudflare Pages",
+  "scripts": {
+    "generate": "node generate.js",
+    "build": "node generate.js"
+  },
+  "author": "Otubusin Ademuyiwa Solutions Ltd",
+  "license": "UNLICENSED"
+}

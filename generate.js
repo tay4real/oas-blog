@@ -663,6 +663,42 @@ function generatePostPage(post, blocks) {
 </html>`;
 }
 
+
+
+function generateSitemap(posts) {
+  const blogUrl = "https://blog.oassolutions.com.ng";
+  const today = new Date().toISOString().split("T")[0];
+
+  const postUrls = posts.map((post) => {
+    const slug = getProperty(post, "Slug", "text");
+    const date = getProperty(post, "Date", "date") || today;
+    return `
+  <url>
+    <loc>${blogUrl}/posts/${slug}.html</loc>
+    <lastmod>${date}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>`;
+  }).join("");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>${blogUrl}/</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>${postUrls}
+</urlset>`;
+}
+
+function generateRobotsTxt() {
+  return `User-agent: *
+Allow: /
+
+Sitemap: https://blog.oassolutions.com.ng/sitemap.xml`;
+}
+
 // ─── MAIN GENERATOR ───────────────────────────────────────────────────────────
 
 async function generate() {
@@ -683,6 +719,16 @@ async function generate() {
   const indexHTML = generateIndexPage(posts);
   fs.writeFileSync(path.join(distDir, "index.html"), indexHTML);
   console.log("✅ Generated index.html");
+
+  // Generate sitemap
+  const sitemap = generateSitemap(posts);
+  fs.writeFileSync(path.join(distDir, "sitemap.xml"), sitemap);
+  console.log("✅ Generated sitemap.xml");
+
+  // Generate robots.txt
+  const robots = generateRobotsTxt();
+  fs.writeFileSync(path.join(distDir, "robots.txt"), robots);
+  console.log("✅ Generated robots.txt");
 
   // Generate individual post pages
   for (const post of posts) {

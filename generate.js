@@ -413,6 +413,20 @@ function generateIndexPage(posts) {
       color: var(--blue-deep); margin-bottom: 32px; letter-spacing: -0.3px;
     }
   </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Blog",
+    "name": "OAS Ltd Blog",
+    "url": "https://blog.oassolutions.com.ng",
+    "description": "Insights on Nigerian tech, transportation, entrepreneurship and product development from OAS Ltd.",
+    "publisher": {
+      "@type": "Organization",
+      "name": "Otubusin Ademuyiwa Solutions Ltd",
+      "url": "https://oassolutions.com.ng"
+    }
+  }
+  </script>
 </head>
 <body>
   ${getNavHTML()}
@@ -583,6 +597,41 @@ function generatePostPage(post, blocks) {
 
 
   </style>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "${title}",
+    "description": "${summary}",
+    "url": "${postUrl}",
+    "datePublished": "${date}",
+    "dateModified": "${date}",
+    "author": {
+      "@type": "Person",
+      "name": "Ademuyiwa Otubusin",
+      "jobTitle": "CEO",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Otubusin Ademuyiwa Solutions Ltd",
+        "url": "https://oassolutions.com.ng"
+      }
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "OAS Ltd",
+      "url": "https://oassolutions.com.ng",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://oassolutions.com.ng/favicon-256.png"
+      }
+    },
+    "image": "${coverImage || 'https://oassolutions.com.ng/favicon-256.png'}",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "${postUrl}"
+    }
+  }
+  </script>
 </head>
 <body>
   ${getNavHTML()}

@@ -63,8 +63,23 @@ async function fetchPublishedPosts() {
 }
 
 async function fetchPageBlocks(pageId) {
-  const data = await notionRequest(`/blocks/${pageId}/children?page_size=100`);
-  return data.results || [];
+  let allBlocks = [];
+  let cursor = undefined;
+  let hasMore = true;
+
+  while (hasMore) {
+    const endpoint = cursor
+      ? `/blocks/${pageId}/children?page_size=100&start_cursor=${cursor}`
+      : `/blocks/${pageId}/children?page_size=100`;
+
+    const data = await notionRequest(endpoint);
+    const blocks = data.results || [];
+    allBlocks = allBlocks.concat(blocks);
+    hasMore = data.has_more || false;
+    cursor = data.next_cursor || undefined;
+  }
+
+  return allBlocks;
 }
 
 function getProperty(page, name, type) {

@@ -458,7 +458,9 @@ function generatePostPage(post, blocks) {
   const slug = getProperty(post, "Slug", "text");
   const date = getProperty(post, "Date", "date");
   const category = getProperty(post, "Category", "select");
+  const coverImage = getProperty(post, "Cover Image URL", "text");
   const content = blocksToHTML(blocks);
+  const ogImage = coverImage || "https://oassolutions.com.ng/og-default.png";
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -467,12 +469,28 @@ function generatePostPage(post, blocks) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>${title} — OAS Ltd Blog</title>
   <meta name="description" content="${summary}" />
+
+   <!-- Open Graph — controls how link looks when shared -->
   <meta property="og:title" content="${title}" />
   <meta property="og:description" content="${summary}" />
   <meta property="og:url" content="https://blog.oassolutions.com.ng/posts/${slug}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="OAS Ltd Blog" />
+  <meta property="og:image" content="${ogImage}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="${title}" />
+
+  <!-- Twitter / X card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${title}" />
+  <meta name="twitter:description" content="${summary}" />
+  <meta name="twitter:image" content="${ogImage}" />
+  <meta name="twitter:image:alt" content="${title}" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="icon" type="image/svg+xml" href="https://oassolutions.com.ng/favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="https://oassolutions.com.ng/favicon.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     ${getBaseStyles()}
@@ -622,10 +640,10 @@ function generatePostPage(post, blocks) {
       "url": "https://oassolutions.com.ng",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://oassolutions.com.ng/favicon-256.png"
+        "url": "https://oassolutions.com.ng/android-chrome-512x512.png"
       }
     },
-    "image": "${coverImage || 'https://oassolutions.com.ng/favicon-256.png'}",
+    "image": "${coverImage || 'https://oassolutions.com.ng/android-chrome-512x512.png'}",
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": "${postUrl}"

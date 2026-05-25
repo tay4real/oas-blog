@@ -8,22 +8,29 @@ on:
 jobs:
   trigger-rebuild:
     runs-on: ubuntu-latest
-    name: Push empty commit to trigger Cloudflare Pages rebuild
+    name: Trigger Cloudflare Pages rebuild for new Notion posts
+
+    permissions:
+      contents: write
+
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
 
       - name: Configure git
         run: |
-          git config user.name "OAS Blog Bot"
-          git config user.email "info@oassolutions.com.ng"
+          git config --global user.name "OAS Blog Bot"
+          git config --global user.email "info@oassolutions.com.ng"
 
       - name: Push rebuild trigger
         run: |
           echo "Last rebuild: $(date -u)" > .last-rebuild
           git add .last-rebuild
-          git commit -m "chore: trigger blog rebuild $(date -u)"
-          git push
+          git diff --cached --quiet || git commit -m "chore: trigger blog rebuild $(date -u)"
+          git push origin main

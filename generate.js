@@ -463,6 +463,7 @@ function generatePostPage(post, blocks) {
   const coverImage = getProperty(post, "Cover Image URL", "text");
   const content = blocksToHTML(blocks);
   const ogImage = coverImage || "https://oassolutions.com.ng/og-default.png";
+  const postUrl = `https://blog.oassolutions.com.ng/posts/${slug}`;
 
   return `<!DOCTYPE html>
 <html lang="en">

@@ -2,13 +2,11 @@ name: Trigger Blog Rebuild
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 */6 * * *'
 
 jobs:
   trigger-rebuild:
     runs-on: ubuntu-latest
-    name: Trigger Cloudflare Pages rebuild for new Notion posts
+    name: Trigger Cloudflare Pages rebuild
 
     permissions:
       contents: write
@@ -22,15 +20,17 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           persist-credentials: true
+          fetch-depth: 0
 
       - name: Configure git
         run: |
           git config --global user.name "OAS Blog Bot"
           git config --global user.email "info@oassolutions.com.ng"
 
-      - name: Push rebuild trigger
+      - name: Pull latest and push rebuild trigger
         run: |
+          git pull origin main --rebase
           echo "Last rebuild: $(date -u)" > .last-rebuild
           git add .last-rebuild
-          git diff --cached --quiet || git commit -m "chore: trigger blog rebuild $(date -u)"
+          git diff --cached --quiet && echo "Nothing to commit" || git commit -m "chore: trigger blog rebuild $(date -u)"
           git push origin main

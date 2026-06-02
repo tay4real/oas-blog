@@ -327,7 +327,7 @@ function generateIndexPage(posts) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blog — OAS Ltd</title>
+  <title>Blog — OAS Solutions Ltd</title>
   <meta name="description" content="Insights on Nigerian tech, transportation, entrepreneurship, and product development from Otubusin Ademuyiwa Solutions Ltd." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -419,9 +419,9 @@ function generateIndexPage(posts) {
   {
     "@context": "https://schema.org",
     "@type": "Blog",
-    "name": "OAS Ltd Blog",
+    "name": "OAS Solutions Ltd Blog",
     "url": "https://blog.oassolutions.com.ng",
-    "description": "Insights on Nigerian tech, transportation, entrepreneurship and product development from OAS Ltd.",
+    "description": "Insights on Nigerian tech, transportation, entrepreneurship and product development from OAS Solutions Ltd.",
     "publisher": {
       "@type": "Organization",
       "name": "Otubusin Ademuyiwa Solutions Ltd",
@@ -435,8 +435,8 @@ function generateIndexPage(posts) {
 
   <div class="blog-hero">
     <div class="blog-hero-inner">
-      <div class="blog-tag">OAS Ltd Blog</div>
-      <h1>Insights from the OAS Ltd team</h1>
+      <div class="blog-tag">OAS Solutions Ltd Blog</div>
+      <h1>Insights from the OAS Solutions Ltd team</h1>
       <p>Product updates, Nigerian tech, entrepreneurship, and lessons from building digital solutions across Nigeria.</p>
     </div>
   </div>
@@ -470,7 +470,7 @@ function generatePostPage(post, blocks) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>${title} — OAS Ltd Blog</title>
+  <title>${title} — OAS Solutions Ltd Blog</title>
   <meta name="description" content="${summary}" />
 
    <!-- Open Graph — controls how link looks when shared -->
@@ -478,7 +478,7 @@ function generatePostPage(post, blocks) {
   <meta property="og:description" content="${summary}" />
   <meta property="og:url" content="https://blog.oassolutions.com.ng/posts/${slug}" />
   <meta property="og:type" content="article" />
-  <meta property="og:site_name" content="OAS Ltd Blog" />
+  <meta property="og:site_name" content="OAS Solutions Ltd Blog" />
   <meta property="og:image" content="${ogImage}" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
@@ -639,7 +639,7 @@ function generatePostPage(post, blocks) {
     },
     "publisher": {
       "@type": "Organization",
-      "name": "OAS Ltd",
+      "name": "OAS Solutions Ltd",
       "url": "https://oassolutions.com.ng",
       "logo": {
         "@type": "ImageObject",
@@ -723,7 +723,7 @@ function generatePostPage(post, blocks) {
 
     <!-- More posts -->
     <div class="more-posts">
-      <div class="more-posts-title">More from OAS Ltd</div>
+      <div class="more-posts-title">More from OAS Solutions Ltd</div>
       <a href="/" class="more-posts-link">← View all posts</a>
     </div>
   </div>

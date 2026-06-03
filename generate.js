@@ -256,7 +256,7 @@ function getNavHTML() {
     <nav>
       <a href="https://oassolutions.com.ng" class="nav-logo">
         <div class="logo-mark">OAS</div>
-        <span class="logo-text">OAS <span>Ltd</span></span>
+        <span class="logo-text">OAS Solutions <span>Ltd</span></span>
       </a>
       <ul class="nav-links">
         <li><a href="https://oassolutions.com.ng">Home</a></li>
@@ -275,7 +275,7 @@ function getFooterHTML() {
         <div class="footer-brand">
           <a href="https://oassolutions.com.ng" class="nav-logo" style="text-decoration:none;">
             <div class="logo-mark">OAS</div>
-            <span class="footer-logo-text">OAS <span>Ltd</span></span>
+            <span class="footer-logo-text">OAS Solutions <span>Ltd</span></span>
           </a>
           <p>Building digital solutions that transform lives across Nigeria. RC No. RC7765644</p>
         </div>
@@ -288,7 +288,7 @@ function getFooterHTML() {
         </div>
       </div>
       <div class="footer-bottom">
-        <p>© ${new Date().getFullYear()} Otubusin Ademuyiwa Solutions Ltd. RC No. RC7765644. All rights reserved.</p>
+        <p>© ${new Date().getFullYear()} OAS Solutions Ltd. RC No. RC7765644. All rights reserved.</p>
       </div>
     </footer>
   `;
@@ -328,7 +328,7 @@ function generateIndexPage(posts) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blog — OAS Solutions Ltd</title>
-  <meta name="description" content="Insights on Nigerian tech, transportation, entrepreneurship, and product development from Otubusin Ademuyiwa Solutions Ltd." />
+  <meta name="description" content="Insights on Nigerian tech, transportation, entrepreneurship, and product development from OAS Solutions Ltd." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="icon" type="image/svg+xml" href="https://oassolutions.com.ng/favicon.svg" />
@@ -424,7 +424,7 @@ function generateIndexPage(posts) {
     "description": "Insights on Nigerian tech, transportation, entrepreneurship and product development from OAS Solutions Ltd.",
     "publisher": {
       "@type": "Organization",
-      "name": "Otubusin Ademuyiwa Solutions Ltd",
+      "name": "OAS Solutions Ltd",
       "url": "https://oassolutions.com.ng"
     }
   }
@@ -633,7 +633,7 @@ function generatePostPage(post, blocks) {
       "jobTitle": "CEO",
       "worksFor": {
         "@type": "Organization",
-        "name": "Otubusin Ademuyiwa Solutions Ltd",
+        "name": "OAS Solutions Ltd",
         "url": "https://oassolutions.com.ng"
       }
     },
@@ -680,7 +680,7 @@ function generatePostPage(post, blocks) {
       <div class="author-avatar">A</div>
       <div>
         <div class="author-name">Ademuyiwa Otubusin</div>
-        <div class="author-title">CEO, Otubusin Ademuyiwa Solutions Ltd</div>
+        <div class="author-title">CEO, OAS Solutions Ltd</div>
       </div>
     </div>
 

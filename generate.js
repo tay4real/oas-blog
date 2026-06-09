@@ -96,6 +96,8 @@ function getProperty(page, name, type) {
       return prop.date?.start || "";
     case "select":
       return prop.select?.name || "";
+    case "multi_select":
+      return prop.multi_select?.map((t) => t.name) || [];
     default:
       return "";
   }
@@ -303,8 +305,8 @@ function getFooterHTML() {
 function extractCategories(posts) {
   const cats = new Set();
   for (const post of posts) {
-    const cat = getProperty(post, "Category", "select");
-    if (cat) cats.add(cat);
+    const postCats = getProperty(post, "Category", "multi_select");
+    for (const cat of postCats) cats.add(cat);
   }
   return [...cats].sort();
 }
@@ -319,7 +321,7 @@ function buildSearchIndex(posts) {
     summary: getProperty(post, "Summary", "text"),
     slug: getProperty(post, "Slug", "text"),
     date: getProperty(post, "Date", "date"),
-    category: getProperty(post, "Category", "select"),
+    categories: getProperty(post, "Category", "multi_select"),
     coverImage: getProperty(post, "Cover Image URL", "text"),
   }));
 }
@@ -474,12 +476,12 @@ function generateIndexPage(posts) {
         const summary = getProperty(post, "Summary", "text");
         const slug = getProperty(post, "Slug", "text");
         const date = getProperty(post, "Date", "date");
-        const category = getProperty(post, "Category", "select");
+        const categories = getProperty(post, "Category", "multi_select");
         const coverImage = getProperty(post, "Cover Image URL", "text");
         return `
-          <article class="post-card" data-category="${category}">
+          <article class="post-card" data-categories="${categories.join(",")}">
             ${coverImage ? `<div class="post-card-image"><img src="${coverImage}" alt="${title}" loading="lazy"></div>` : ""}
-            ${category ? `<span class="post-category">${category}</span>` : ""}
+            ${categories.length ? categories.map(c => `<span class="post-category">${c}</span>`).join("") : ""}
             <h2 class="post-card-title">
               <a href="/posts/${slug}.html">${title}</a>
             </h2>
@@ -658,10 +660,11 @@ function generateIndexPage(posts) {
     }
 
     function renderCard(post) {
+      const catPills = (post.categories || []).map(c => \`<span class="post-category">\${c}</span>\`).join('');
       return \`
         <article class="post-card">
           \${post.coverImage ? \`<div class="post-card-image"><img src="\${post.coverImage}" alt="\${post.title}" loading="lazy"></div>\` : ''}
-          \${post.category ? \`<span class="post-category">\${post.category}</span>\` : ''}
+          \${catPills}
           <h2 class="post-card-title"><a href="/posts/\${post.slug}.html">\${post.title}</a></h2>
           <p class="post-card-summary">\${post.summary}</p>
           <div class="post-card-footer">
@@ -680,14 +683,13 @@ function generateIndexPage(posts) {
         activeCategory = pill.dataset.category;
         catPills.forEach(p => p.classList.toggle('active', p.dataset.category === activeCategory));
 
-        // If there's a live search query, re-run it with the new category
         const q = searchInput.value.trim();
         if (q.length > 0) {
           runSearch(q);
         } else {
-          // Filter the static cards
           allCards.forEach(card => {
-            const match = activeCategory === 'all' || card.dataset.category === activeCategory;
+            const cardCats = (card.dataset.categories || '').split(',').filter(Boolean);
+            const match = activeCategory === 'all' || cardCats.includes(activeCategory);
             card.style.display = match ? '' : 'none';
           });
         }
@@ -699,11 +701,12 @@ function generateIndexPage(posts) {
       const lower = q.toLowerCase();
 
       const matches = SEARCH_INDEX.filter(post => {
-        const inCategory = activeCategory === 'all' || post.category === activeCategory;
+        const postCats = post.categories || [];
+        const inCategory = activeCategory === 'all' || postCats.includes(activeCategory);
         const inText =
           post.title.toLowerCase().includes(lower) ||
           post.summary.toLowerCase().includes(lower) ||
-          post.category.toLowerCase().includes(lower);
+          postCats.join(' ').toLowerCase().includes(lower);
         return inCategory && inText;
       });
 
@@ -732,7 +735,8 @@ function generateIndexPage(posts) {
       resultsDiv.innerHTML = '';
       // Re-apply category filter on the static grid
       allCards.forEach(card => {
-        const match = activeCategory === 'all' || card.dataset.category === activeCategory;
+        const cardCats = (card.dataset.categories || '').split(',').filter(Boolean);
+        const match = activeCategory === 'all' || cardCats.includes(activeCategory);
         card.style.display = match ? '' : 'none';
       });
     }
@@ -767,8 +771,8 @@ function generateIndexPage(posts) {
  */
 function generateCategoryPage(categoryName, posts, allCategories) {
   const slug = categoryName.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
-  const categoryPosts = posts.filter(
-    (p) => getProperty(p, "Category", "select") === categoryName
+  const categoryPosts = posts.filter((p) =>
+    getProperty(p, "Category", "multi_select").includes(categoryName)
   );
 
   const postCards = categoryPosts.length === 0
@@ -779,10 +783,11 @@ function generateCategoryPage(categoryName, posts, allCategories) {
         const postSlug = getProperty(post, "Slug", "text");
         const date = getProperty(post, "Date", "date");
         const coverImage = getProperty(post, "Cover Image URL", "text");
+        const allPostCats = getProperty(post, "Category", "multi_select");
         return `
           <article class="post-card">
             ${coverImage ? `<div class="post-card-image"><img src="${coverImage}" alt="${title}" loading="lazy"></div>` : ""}
-            <span class="post-category">${categoryName}</span>
+            ${allPostCats.map(c => `<span class="post-category">${c}</span>`).join("")}
             <h2 class="post-card-title"><a href="/posts/${postSlug}.html">${title}</a></h2>
             <p class="post-card-summary">${summary}</p>
             <div class="post-card-footer">
@@ -897,14 +902,17 @@ function generatePostPage(post, blocks) {
   const summary = getProperty(post, "Summary", "text");
   const slug = getProperty(post, "Slug", "text");
   const date = getProperty(post, "Date", "date");
-  const category = getProperty(post, "Category", "select");
+  const categories = getProperty(post, "Category", "multi_select");
   const coverImage = getProperty(post, "Cover Image URL", "text");
   const content = blocksToHTML(blocks);
   const ogImage = coverImage || "https://oassolutions.com.ng/og-default.png";
   const postUrl = `https://blog.oassolutions.com.ng/posts/${slug}`;
-  const categorySlug = category
-    ? category.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
-    : null;
+
+  // Build category tag links for the post header
+  const categoryTagsHTML = categories.map((cat) => {
+    const catSlug = cat.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    return `<a href="/category/${catSlug}/" class="post-category-tag">${cat}</a>`;
+  }).join("");
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -1092,11 +1100,7 @@ function generatePostPage(post, blocks) {
   <div class="post-header">
     <div class="post-header-inner">
       <div class="post-meta">
-        ${category && categorySlug
-          ? `<a href="/category/${categorySlug}/" class="post-category-tag">${category}</a>`
-          : category
-          ? `<span class="post-category-tag">${category}</span>`
-          : ""}
+        ${categoryTagsHTML}
         <span class="post-date-tag">${formatDate(date)}</span>
       </div>
       <h1>${title}</h1>

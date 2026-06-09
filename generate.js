@@ -294,7 +294,179 @@ function getFooterHTML() {
   `;
 }
 
+// ─── CATEGORY & SEARCH HELPERS ────────────────────────────────────────────────
+
+/**
+ * Extract all unique categories from posts, sorted alphabetically.
+ * Returns an array like ["Business Automation", "Cybersecurity", ...]
+ */
+function extractCategories(posts) {
+  const cats = new Set();
+  for (const post of posts) {
+    const cat = getProperty(post, "Category", "select");
+    if (cat) cats.add(cat);
+  }
+  return [...cats].sort();
+}
+
+/**
+ * Build the search index as a JSON-safe JS array literal embedded in the page.
+ * Avoids the need for a separate fetch request.
+ */
+function buildSearchIndex(posts) {
+  return posts.map((post) => ({
+    title: getProperty(post, "Title", "title"),
+    summary: getProperty(post, "Summary", "text"),
+    slug: getProperty(post, "Slug", "text"),
+    date: getProperty(post, "Date", "date"),
+    category: getProperty(post, "Category", "select"),
+    coverImage: getProperty(post, "Cover Image URL", "text"),
+  }));
+}
+
+/**
+ * Render the category filter pills HTML.
+ * activeCategory = null means "All" is active.
+ */
+function getCategoryNavHTML(categories, activeCategory = null) {
+  const allPill = `
+    <a href="/" class="cat-pill${activeCategory === null ? " active" : ""}" data-category="all">
+      All
+    </a>`;
+
+  const catPills = categories.map((cat) => {
+    const slug = cat.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    const isActive = cat === activeCategory;
+    return `
+    <a href="/category/${slug}/" class="cat-pill${isActive ? " active" : ""}" data-category="${cat}">
+      ${cat}
+    </a>`;
+  }).join("");
+
+  return `
+  <div class="category-nav" role="navigation" aria-label="Browse by category">
+    ${allPill}
+    ${catPills}
+  </div>`;
+}
+
+/**
+ * Styles specific to the search + category features on the index page.
+ */
+function getIndexFeatureStyles() {
+  return `
+    /* ── Search bar ─────────────────────────── */
+    .search-wrap {
+      position: relative;
+      max-width: 520px;
+      margin-bottom: 28px;
+    }
+    .search-wrap svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px; height: 18px;
+      color: var(--gray);
+      pointer-events: none;
+    }
+    #blog-search {
+      width: 100%;
+      padding: 12px 16px 12px 42px;
+      border: 1.5px solid var(--gray-light);
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      background: var(--white);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    #blog-search:focus {
+      border-color: var(--blue-brand);
+      box-shadow: 0 0 0 3px rgba(30,86,176,0.1);
+    }
+    #blog-search::placeholder { color: #9CA3AF; }
+
+    /* ── Category pills ─────────────────────── */
+    .category-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 36px;
+    }
+    .cat-pill {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 999px;
+      border: 1.5px solid var(--gray-light);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray);
+      cursor: pointer;
+      transition: all 0.18s;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .cat-pill:hover {
+      border-color: var(--blue-brand);
+      color: var(--blue-brand);
+      text-decoration: none;
+    }
+    .cat-pill.active {
+      background: var(--blue-brand);
+      border-color: var(--blue-brand);
+      color: white;
+    }
+
+    /* ── Search results state ───────────────── */
+    #search-results { display: none; }
+    #search-results.visible { display: block; }
+
+    .no-results {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--gray);
+    }
+    .no-results strong { color: var(--blue-deep); }
+
+    /* ── Result count badge ─────────────────── */
+    .results-count {
+      font-size: 13px;
+      color: var(--gray);
+      margin-bottom: 20px;
+    }
+    .results-count strong { color: var(--blue-deep); }
+
+    /* ── Category page heading ──────────────── */
+    .category-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    .category-heading h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(22px, 3vw, 30px);
+      font-weight: 700;
+      color: var(--blue-deep);
+    }
+    .category-count {
+      font-size: 13px;
+      color: var(--gray);
+      background: var(--gray-light);
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+  `;
+}
+
+// ─── INDEX PAGE ───────────────────────────────────────────────────────────────
+
 function generateIndexPage(posts) {
+  const categories = extractCategories(posts);
+  const searchIndex = buildSearchIndex(posts);
+
   const postCards = posts.length === 0
     ? `<div class="no-posts"><p>No posts published yet. Check back soon.</p></div>`
     : posts.map((post) => {
@@ -305,8 +477,8 @@ function generateIndexPage(posts) {
         const category = getProperty(post, "Category", "select");
         const coverImage = getProperty(post, "Cover Image URL", "text");
         return `
-          <article class="post-card">
-           ${coverImage ? `<div class="post-card-image"><img src="${coverImage}" alt="${title}" loading="lazy"></div>` : ""}
+          <article class="post-card" data-category="${category}">
+            ${coverImage ? `<div class="post-card-image"><img src="${coverImage}" alt="${title}" loading="lazy"></div>` : ""}
             ${category ? `<span class="post-category">${category}</span>` : ""}
             <h2 class="post-card-title">
               <a href="/posts/${slug}.html">${title}</a>
@@ -314,9 +486,7 @@ function generateIndexPage(posts) {
             <p class="post-card-summary">${summary}</p>
             <div class="post-card-footer">
               <span class="post-date">${formatDate(date)}</span>
-              <a href="/posts/${slug}" class="read-more">
-                Read more →
-              </a>
+              <a href="/posts/${slug}" class="read-more">Read more →</a>
             </div>
           </article>
         `;
@@ -333,10 +503,10 @@ function generateIndexPage(posts) {
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="icon" type="image/svg+xml" href="https://oassolutions.com.ng/favicon.svg" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
-    <!-- Sitemap link -->
   <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
   <style>
     ${getBaseStyles()}
+    ${getIndexFeatureStyles()}
 
     /* BLOG INDEX */
     .blog-hero {
@@ -376,17 +546,12 @@ function generateIndexPage(posts) {
       box-shadow: 0 16px 40px rgba(10,22,40,0.08);
       border-color: var(--blue-brand);
     }
-
     .post-card-image {
-        margin: -28px -28px 20px -28px;
-        border-radius: 16px 16px 0 0;
-        overflow: hidden;
-        height: 180px;
+      margin: -28px -28px 20px -28px;
+      border-radius: 16px 16px 0 0;
+      overflow: hidden; height: 180px;
     }
-    .post-card-image img {
-        width: 100%; height: 100%;
-        object-fit: cover;
-    }
+    .post-card-image img { width: 100%; height: 100%; object-fit: cover; }
     .post-category {
       display: inline-block; font-size: 11px; font-weight: 600;
       color: var(--blue-brand); background: var(--blue-pale);
@@ -412,7 +577,7 @@ function generateIndexPage(posts) {
     .section-title {
       font-family: 'Playfair Display', serif;
       font-size: clamp(24px, 3vw, 32px); font-weight: 700;
-      color: var(--blue-deep); margin-bottom: 32px; letter-spacing: -0.3px;
+      color: var(--blue-deep); margin-bottom: 24px; letter-spacing: -0.3px;
     }
   </style>
   <script type="application/ld+json">
@@ -444,6 +609,277 @@ function generateIndexPage(posts) {
   <div class="blog-content">
     <div class="section-label">Latest Posts</div>
     <h2 class="section-title">All articles</h2>
+
+    <!-- Search bar -->
+    <div class="search-wrap">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/>
+      </svg>
+      <input
+        type="search"
+        id="blog-search"
+        placeholder="Search articles by title, category or keyword…"
+        aria-label="Search articles"
+        autocomplete="off"
+      />
+    </div>
+
+    <!-- Category filter pills -->
+    ${getCategoryNavHTML(categories)}
+
+    <!-- Live search results (hidden until user types) -->
+    <div id="search-results" role="region" aria-live="polite" aria-label="Search results"></div>
+
+    <!-- Static posts grid (hidden while searching) -->
+    <div id="posts-grid" class="posts-grid">
+      ${postCards}
+    </div>
+  </div>
+
+  ${getFooterHTML()}
+
+  <script>
+    // ── Embedded search index (generated at build time) ──────────────────────
+    const SEARCH_INDEX = ${JSON.stringify(searchIndex)};
+
+    // ── DOM refs ─────────────────────────────────────────────────────────────
+    const searchInput   = document.getElementById('blog-search');
+    const resultsDiv    = document.getElementById('search-results');
+    const postsGrid     = document.getElementById('posts-grid');
+    const allCards      = Array.from(postsGrid.querySelectorAll('.post-card'));
+    const catPills      = Array.from(document.querySelectorAll('.cat-pill'));
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      return new Date(dateStr).toLocaleDateString('en-NG', {
+        year: 'numeric', month: 'long', day: 'numeric'
+      });
+    }
+
+    function renderCard(post) {
+      return \`
+        <article class="post-card">
+          \${post.coverImage ? \`<div class="post-card-image"><img src="\${post.coverImage}" alt="\${post.title}" loading="lazy"></div>\` : ''}
+          \${post.category ? \`<span class="post-category">\${post.category}</span>\` : ''}
+          <h2 class="post-card-title"><a href="/posts/\${post.slug}.html">\${post.title}</a></h2>
+          <p class="post-card-summary">\${post.summary}</p>
+          <div class="post-card-footer">
+            <span class="post-date">\${formatDate(post.date)}</span>
+            <a href="/posts/\${post.slug}" class="read-more">Read more →</a>
+          </div>
+        </article>\`;
+    }
+
+    // ── Category filter (client-side, no page reload) ─────────────────────
+    let activeCategory = 'all';
+
+    catPills.forEach(pill => {
+      pill.addEventListener('click', (e) => {
+        e.preventDefault();
+        activeCategory = pill.dataset.category;
+        catPills.forEach(p => p.classList.toggle('active', p.dataset.category === activeCategory));
+
+        // If there's a live search query, re-run it with the new category
+        const q = searchInput.value.trim();
+        if (q.length > 0) {
+          runSearch(q);
+        } else {
+          // Filter the static cards
+          allCards.forEach(card => {
+            const match = activeCategory === 'all' || card.dataset.category === activeCategory;
+            card.style.display = match ? '' : 'none';
+          });
+        }
+      });
+    });
+
+    // ── Search ────────────────────────────────────────────────────────────
+    function runSearch(q) {
+      const lower = q.toLowerCase();
+
+      const matches = SEARCH_INDEX.filter(post => {
+        const inCategory = activeCategory === 'all' || post.category === activeCategory;
+        const inText =
+          post.title.toLowerCase().includes(lower) ||
+          post.summary.toLowerCase().includes(lower) ||
+          post.category.toLowerCase().includes(lower);
+        return inCategory && inText;
+      });
+
+      postsGrid.style.display = 'none';
+      resultsDiv.classList.add('visible');
+
+      if (matches.length === 0) {
+        resultsDiv.innerHTML = \`
+          <div class="no-results">
+            No articles found for "<strong>\${q}</strong>"\${activeCategory !== 'all' ? \` in <strong>\${activeCategory}</strong>\` : ''}.
+            <br><br>
+            <a href="/" onclick="clearSearch(event)">Clear search</a>
+          </div>\`;
+      } else {
+        resultsDiv.innerHTML = \`
+          <p class="results-count"><strong>\${matches.length}</strong> article\${matches.length !== 1 ? 's' : ''} found</p>
+          <div class="posts-grid">\${matches.map(renderCard).join('')}</div>\`;
+      }
+    }
+
+    function clearSearch(e) {
+      if (e) e.preventDefault();
+      searchInput.value = '';
+      postsGrid.style.display = '';
+      resultsDiv.classList.remove('visible');
+      resultsDiv.innerHTML = '';
+      // Re-apply category filter on the static grid
+      allCards.forEach(card => {
+        const match = activeCategory === 'all' || card.dataset.category === activeCategory;
+        card.style.display = match ? '' : 'none';
+      });
+    }
+
+    searchInput.addEventListener('input', () => {
+      const q = searchInput.value.trim();
+      if (q.length === 0) {
+        clearSearch();
+      } else if (q.length >= 2) {
+        // Only search after at least 2 characters
+        runSearch(q);
+      }
+    });
+
+    // ── Handle URL ?category= param (for direct category links) ──────────
+    const params = new URLSearchParams(window.location.search);
+    const urlCat = params.get('category');
+    if (urlCat) {
+      const matchPill = catPills.find(p => p.dataset.category === urlCat);
+      if (matchPill) matchPill.click();
+    }
+  </script>
+</body>
+</html>`;
+}
+
+// ─── CATEGORY PAGES ───────────────────────────────────────────────────────────
+
+/**
+ * Generate a static HTML page for each category at /category/<slug>/index.html
+ * These pages also support SEO (Google can index /category/web-development/ etc.)
+ */
+function generateCategoryPage(categoryName, posts, allCategories) {
+  const slug = categoryName.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+  const categoryPosts = posts.filter(
+    (p) => getProperty(p, "Category", "select") === categoryName
+  );
+
+  const postCards = categoryPosts.length === 0
+    ? `<div class="no-posts"><p>No posts in this category yet. Check back soon.</p></div>`
+    : categoryPosts.map((post) => {
+        const title = getProperty(post, "Title", "title");
+        const summary = getProperty(post, "Summary", "text");
+        const postSlug = getProperty(post, "Slug", "text");
+        const date = getProperty(post, "Date", "date");
+        const coverImage = getProperty(post, "Cover Image URL", "text");
+        return `
+          <article class="post-card">
+            ${coverImage ? `<div class="post-card-image"><img src="${coverImage}" alt="${title}" loading="lazy"></div>` : ""}
+            <span class="post-category">${categoryName}</span>
+            <h2 class="post-card-title"><a href="/posts/${postSlug}.html">${title}</a></h2>
+            <p class="post-card-summary">${summary}</p>
+            <div class="post-card-footer">
+              <span class="post-date">${formatDate(date)}</span>
+              <a href="/posts/${postSlug}" class="read-more">Read more →</a>
+            </div>
+          </article>
+        `;
+      }).join("\n");
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${categoryName} — OAS Solutions Ltd Blog</title>
+  <meta name="description" content="Browse all ${categoryName} articles from OAS Solutions Ltd — practical insights for Nigerian businesses." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="icon" type="image/svg+xml" href="https://oassolutions.com.ng/favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="canonical" href="https://blog.oassolutions.com.ng/category/${slug}/" />
+  <style>
+    ${getBaseStyles()}
+    ${getIndexFeatureStyles()}
+
+    .blog-hero {
+      background: var(--blue-deep); padding: 60px 5% 50px;
+      position: relative; overflow: hidden;
+    }
+    .blog-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(30,86,176,0.4), transparent 70%);
+    }
+    .blog-hero-inner { position: relative; z-index: 1; max-width: 680px; }
+    .back-link-hero {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 13px; color: rgba(255,255,255,0.5);
+      margin-bottom: 20px; transition: color 0.2s;
+    }
+    .back-link-hero:hover { color: white; text-decoration: none; }
+    .blog-hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(28px, 4vw, 44px); font-weight: 900;
+      color: white; line-height: 1.15; letter-spacing: -1px; margin-bottom: 12px;
+    }
+    .blog-hero p { font-size: 15px; color: rgba(255,255,255,0.55); font-weight: 300; }
+
+    .blog-content { max-width: 900px; margin: 0 auto; padding: 60px 5%; }
+
+    .posts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .post-card {
+      border: 1px solid var(--gray-light); border-radius: 16px;
+      padding: 28px; background: var(--white);
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    }
+    .post-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(10,22,40,0.08);
+      border-color: var(--blue-brand);
+    }
+    .post-card-image {
+      margin: -28px -28px 20px -28px; border-radius: 16px 16px 0 0;
+      overflow: hidden; height: 180px;
+    }
+    .post-card-image img { width: 100%; height: 100%; object-fit: cover; }
+    .post-category {
+      display: inline-block; font-size: 11px; font-weight: 600;
+      color: var(--blue-brand); background: var(--blue-pale);
+      padding: 3px 10px; border-radius: 20px;
+      text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px;
+    }
+    .post-card-title { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 700; color: var(--blue-deep); margin-bottom: 10px; line-height: 1.3; }
+    .post-card-title a { color: inherit; }
+    .post-card-title a:hover { color: var(--blue-brand); text-decoration: none; }
+    .post-card-summary { font-size: 14px; color: var(--gray); line-height: 1.65; margin-bottom: 20px; font-weight: 300; }
+    .post-card-footer { display: flex; justify-content: space-between; align-items: center; }
+    .post-date { font-size: 12px; color: var(--gray); }
+    .read-more { font-size: 13px; font-weight: 600; color: var(--blue-brand); }
+    .no-posts { text-align: center; padding: 60px; color: var(--gray); }
+  </style>
+</head>
+<body>
+  ${getNavHTML()}
+
+  <div class="blog-hero">
+    <div class="blog-hero-inner">
+      <a href="/" class="back-link-hero">← All articles</a>
+      <h1>${categoryName}</h1>
+      <p>${categoryPosts.length} article${categoryPosts.length !== 1 ? "s" : ""} in this category</p>
+    </div>
+  </div>
+
+  <div class="blog-content">
+    <!-- Other category pills so visitors can hop between categories -->
+    ${getCategoryNavHTML(allCategories, categoryName)}
+
     <div class="posts-grid">
       ${postCards}
     </div>
@@ -453,6 +889,8 @@ function generateIndexPage(posts) {
 </body>
 </html>`;
 }
+
+// ─── POST PAGE ────────────────────────────────────────────────────────────────
 
 function generatePostPage(post, blocks) {
   const title = getProperty(post, "Title", "title");
@@ -464,6 +902,9 @@ function generatePostPage(post, blocks) {
   const content = blocksToHTML(blocks);
   const ogImage = coverImage || "https://oassolutions.com.ng/og-default.png";
   const postUrl = `https://blog.oassolutions.com.ng/posts/${slug}`;
+  const categorySlug = category
+    ? category.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
+    : null;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -473,10 +914,10 @@ function generatePostPage(post, blocks) {
   <title>${title} — OAS Solutions Ltd Blog</title>
   <meta name="description" content="${summary}" />
 
-   <!-- Open Graph — controls how link looks when shared -->
+  <!-- Open Graph -->
   <meta property="og:title" content="${title}" />
   <meta property="og:description" content="${summary}" />
-  <meta property="og:url" content="https://blog.oassolutions.com.ng/posts/${slug}" />
+  <meta property="og:url" content="${postUrl}" />
   <meta property="og:type" content="article" />
   <meta property="og:site_name" content="OAS Solutions Ltd Blog" />
   <meta property="og:image" content="${ogImage}" />
@@ -514,7 +955,9 @@ function generatePostPage(post, blocks) {
       background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.3);
       padding: 4px 12px; border-radius: 20px;
       text-transform: uppercase; letter-spacing: 0.06em;
+      text-decoration: none; transition: background 0.2s;
     }
+    .post-category-tag:hover { background: rgba(59,130,246,0.35); text-decoration: none; }
     .post-date-tag { font-size: 13px; color: rgba(255,255,255,0.5); }
     .post-header h1 {
       font-family: 'Playfair Display', serif;
@@ -525,7 +968,6 @@ function generatePostPage(post, blocks) {
 
     .post-container { max-width: 760px; margin: 0 auto; padding: 60px 5%; }
 
-    /* Back link */
     .back-link {
       display: inline-flex; align-items: center; gap: 6px;
       font-size: 14px; font-weight: 500; color: var(--blue-brand);
@@ -597,26 +1039,16 @@ function generatePostPage(post, blocks) {
 
     /* Comments */
     .comments-section {
-      margin-top: 60px;
-      padding-top: 40px;
+      margin-top: 60px; padding-top: 40px;
       border-top: 1px solid var(--gray-light);
     }
-    .comments-title {
-      font-family: 'Playfair Display', serif;
-      font-size: 24px; font-weight: 700;
-      color: var(--blue-deep); margin-bottom: 8px;
-    }
-    .comments-subtitle {
-      font-size: 14px; color: var(--gray);
-      margin-bottom: 24px;
-    }
+    .comments-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--blue-deep); margin-bottom: 8px; }
+    .comments-subtitle { font-size: 14px; color: var(--gray); margin-bottom: 24px; }
 
     /* More posts */
     .more-posts { margin-top: 60px; padding-top: 40px; border-top: 1px solid var(--gray-light); }
     .more-posts-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; color: var(--blue-deep); margin-bottom: 8px; }
     .more-posts-link { font-size: 15px; color: var(--blue-brand); font-weight: 500; }
-
-
   </style>
   <script type="application/ld+json">
   {
@@ -646,7 +1078,7 @@ function generatePostPage(post, blocks) {
         "url": "https://oassolutions.com.ng/android-chrome-512x512.png"
       }
     },
-    "image": "${coverImage || 'https://oassolutions.com.ng/android-chrome-512x512.png'}",
+    "image": "${coverImage || "https://oassolutions.com.ng/android-chrome-512x512.png"}",
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": "${postUrl}"
@@ -660,7 +1092,11 @@ function generatePostPage(post, blocks) {
   <div class="post-header">
     <div class="post-header-inner">
       <div class="post-meta">
-        ${category ? `<span class="post-category-tag">${category}</span>` : ""}
+        ${category && categorySlug
+          ? `<a href="/category/${categorySlug}/" class="post-category-tag">${category}</a>`
+          : category
+          ? `<span class="post-category-tag">${category}</span>`
+          : ""}
         <span class="post-date-tag">${formatDate(date)}</span>
       </div>
       <h1>${title}</h1>
@@ -694,7 +1130,7 @@ function generatePostPage(post, blocks) {
         <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://blog.oassolutions.com.ng/posts/${slug}" target="_blank" class="share-link">
           in Share on LinkedIn
         </a>
-        <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(title + ' — https://blog.oassolutions.com.ng/posts/' + slug )}" target="_blank" class="share-link">
+        <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(title + " — https://blog.oassolutions.com.ng/posts/" + slug)}" target="_blank" class="share-link">
           💬 Share on WhatsApp
         </a>
       </div>
@@ -733,9 +1169,9 @@ function generatePostPage(post, blocks) {
 </html>`;
 }
 
+// ─── SITEMAP ──────────────────────────────────────────────────────────────────
 
-
-function generateSitemap(posts) {
+function generateSitemap(posts, categories) {
   const blogUrl = "https://blog.oassolutions.com.ng";
   const today = new Date().toISOString().split("T")[0];
 
@@ -751,6 +1187,17 @@ function generateSitemap(posts) {
   </url>`;
   }).join("");
 
+  const categoryUrls = categories.map((cat) => {
+    const slug = cat.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    return `
+  <url>
+    <loc>${blogUrl}/category/${slug}/</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>`;
+  }).join("");
+
   return `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
@@ -758,7 +1205,7 @@ function generateSitemap(posts) {
     <lastmod>${today}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-  </url>${postUrls}
+  </url>${categoryUrls}${postUrls}
 </urlset>`;
 }
 
@@ -777,21 +1224,37 @@ async function generate() {
   // Create dist directories
   const distDir = path.join(__dirname, "dist");
   const postsDir = path.join(distDir, "posts");
+  const categoryDir = path.join(distDir, "category");
   if (!fs.existsSync(distDir)) fs.mkdirSync(distDir, { recursive: true });
   if (!fs.existsSync(postsDir)) fs.mkdirSync(postsDir, { recursive: true });
+  if (!fs.existsSync(categoryDir)) fs.mkdirSync(categoryDir, { recursive: true });
 
   // Fetch published posts from Notion
   console.log("📚 Fetching posts from Notion...");
   const posts = await fetchPublishedPosts();
   console.log(`✅ Found ${posts.length} published post(s)`);
 
+  // Derive categories
+  const categories = extractCategories(posts);
+  console.log(`🏷️  Found ${categories.length} categor${categories.length !== 1 ? "ies" : "y"}: ${categories.join(", ")}`);
+
   // Generate index page
   const indexHTML = generateIndexPage(posts);
   fs.writeFileSync(path.join(distDir, "index.html"), indexHTML);
   console.log("✅ Generated index.html");
 
-  // Generate sitemap
-  const sitemap = generateSitemap(posts);
+  // Generate category pages
+  for (const cat of categories) {
+    const slug = cat.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    const catPageDir = path.join(categoryDir, slug);
+    if (!fs.existsSync(catPageDir)) fs.mkdirSync(catPageDir, { recursive: true });
+    const catHTML = generateCategoryPage(cat, posts, categories);
+    fs.writeFileSync(path.join(catPageDir, "index.html"), catHTML);
+    console.log(`✅ Generated category/${slug}/index.html`);
+  }
+
+  // Generate sitemap (now includes category URLs)
+  const sitemap = generateSitemap(posts, categories);
   fs.writeFileSync(path.join(distDir, "sitemap.xml"), sitemap);
   console.log("✅ Generated sitemap.xml");
 
@@ -820,6 +1283,7 @@ async function generate() {
   console.log("\n🎉 Blog generation complete!");
   console.log(`📁 Output: ${distDir}`);
   console.log(`📊 Total posts: ${posts.length}`);
+  console.log(`🏷️  Total categories: ${categories.length}`);
 }
 
 generate().catch((err) => {

@@ -616,6 +616,98 @@ function getIndexFeatureStyles() {
   `;
 }
 
+// ─── SIDEBAR ─────────────────────────────────────────────────────────────────
+
+function getSidebarHTML(posts, categories, activeCategoryName = null) {
+  // Recent posts — show latest 5
+  const recentPosts = posts.slice(0, 5);
+  const recentPostsHTML = recentPosts.map((post) => {
+    const title = getProperty(post, "Title", "title");
+    const slug = getProperty(post, "Slug", "text");
+    const date = getProperty(post, "Date", "date");
+    return `
+      <a href="/posts/${slug}.html" class="sidebar-recent-post">
+        <span class="sidebar-recent-title">${title}</span>
+        <span class="sidebar-recent-date">${formatDate(date)}</span>
+      </a>`;
+  }).join("");
+
+  // Categories with post counts
+  const categoriesHTML = categories.map((cat) => {
+    const slug = cat.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+    const count = posts.filter((p) =>
+      getProperty(p, "Category", "multi_select").includes(cat)
+    ).length;
+    const isActive = cat === activeCategoryName;
+    return `
+      <li>
+        <a href="/category/${slug}/" ${isActive ? 'style="color:var(--blue-brand);font-weight:600;"' : ""}>
+          ${cat}
+          <span class="sidebar-cat-count">${count}</span>
+        </a>
+      </li>`;
+  }).join("");
+
+  return `
+    <aside class="page-sidebar" aria-label="Sidebar">
+
+      <!-- About OAS Solutions -->
+      <div class="sidebar-widget">
+        <div class="sidebar-widget-title">About OAS Solutions</div>
+        <p class="sidebar-about-text">
+          We build digital solutions that transform businesses across Nigeria —
+          from web and mobile apps to AI-powered tools and automation platforms.
+        </p>
+        <a href="https://oassolutions.com.ng/#contact" class="sidebar-cta-btn">
+          Get a Free Consultation →
+        </a>
+      </div>
+
+      <!-- Go54 Skyscraper Ad — 160×600 desktop -->
+      <div class="sidebar-widget" style="padding:12px; text-align:center;">
+        <div class="sidebar-widget-title">Recommended</div>
+        <div class="ad-slot ad-leaderboard-desktop">
+          <a href='https://app.go54.com/signup?aff=ademuyiwao' target='_blank' rel='noopener sponsored'>
+            <img src='https://eu2.contabostorage.com/0929d2ec15194ce3b3cba7a318485ab8:go54/Affiliate/160*600/affilliates-2.1.webp'
+              alt='Go54 Web Hosting Nigeria' width='160' height='600' loading='lazy' />
+          </a>
+        </div>
+        <!-- Go54 300×250 — shown on tablet/mobile instead -->
+        <div class="ad-slot ad-leaderboard-mobile">
+          <a href='https://app.go54.com/signup?aff=ademuyiwao' target='_blank' rel='noopener sponsored'>
+            <img src='https://eu2.contabostorage.com/0929d2ec15194ce3b3cba7a318485ab8:go54/Affiliate/300X250/affilliates-1.webp'
+              alt='Go54 Web Hosting Nigeria' width='300' height='250' loading='lazy' />
+          </a>
+        </div>
+      </div>
+
+      <!-- Recent Posts -->
+      <div class="sidebar-widget">
+        <div class="sidebar-widget-title">Recent Posts</div>
+        ${recentPostsHTML}
+      </div>
+
+      <!-- Categories -->
+      <div class="sidebar-widget">
+        <div class="sidebar-widget-title">Browse by Category</div>
+        <ul class="sidebar-cat-list">
+          ${categoriesHTML}
+        </ul>
+      </div>
+
+      <!-- Go54 300×600 Ad — second ad slot -->
+      <div class="sidebar-widget" style="padding:12px; text-align:center;">
+        <div class="ad-slot">
+          <a href='https://app.go54.com/signup?aff=ademuyiwao' target='_blank' rel='noopener sponsored'>
+            <img src='https://eu2.contabostorage.com/0929d2ec15194ce3b3cba7a318485ab8:go54/Affiliate/300x600/affilliates-3.1.webp'
+              alt='Go54 Web Hosting Nigeria' width='300' height='600' loading='lazy' />
+          </a>
+        </div>
+      </div>
+
+    </aside>`;
+}
+
 // ─── INDEX PAGE ───────────────────────────────────────────────────────────────
 
 function generateIndexPage(posts) {

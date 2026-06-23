@@ -250,6 +250,159 @@ function getBaseStyles() {
       .nav-links { display: none; }
       .footer-inner { flex-direction: column; align-items: flex-start; }
     }
+
+    /* ── Page layout with sidebar ───────────── */
+    .page-layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 5%;
+      align-items: start;
+    }
+    .page-main { min-width: 0; }
+    .page-sidebar {
+      position: sticky;
+      top: 88px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* ── Sidebar widgets ─────────────────────── */
+    .sidebar-widget {
+      background: var(--off-white);
+      border: 1px solid var(--gray-light);
+      border-radius: 16px;
+      padding: 24px;
+    }
+    .sidebar-widget-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--blue-deep);
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--blue-pale);
+    }
+
+    /* Recent posts widget */
+    .sidebar-recent-post {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--gray-light);
+      text-decoration: none;
+    }
+    .sidebar-recent-post:last-child { border-bottom: none; }
+    .sidebar-recent-post:hover { text-decoration: none; }
+    .sidebar-recent-title {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--blue-deep);
+      line-height: 1.4;
+      transition: color 0.2s;
+    }
+    .sidebar-recent-post:hover .sidebar-recent-title {
+      color: var(--blue-brand);
+    }
+    .sidebar-recent-date {
+      font-size: 12px;
+      color: var(--gray);
+    }
+
+    /* Category widget */
+    .sidebar-cat-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      list-style: none;
+    }
+    .sidebar-cat-list a {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: var(--gray);
+      padding: 6px 0;
+      border-bottom: 1px solid var(--gray-light);
+      transition: color 0.2s;
+      text-decoration: none;
+    }
+    .sidebar-cat-list a:last-child { border-bottom: none; }
+    .sidebar-cat-list a:hover { color: var(--blue-brand); text-decoration: none; }
+    .sidebar-cat-count {
+      font-size: 12px;
+      background: var(--blue-pale);
+      color: var(--blue-brand);
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    /* About widget */
+    .sidebar-about-text {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.65;
+      margin-bottom: 16px;
+    }
+    .sidebar-cta-btn {
+      display: block;
+      text-align: center;
+      background: var(--blue-brand);
+      color: white !important;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.2s;
+      text-decoration: none !important;
+    }
+    .sidebar-cta-btn:hover {
+      background: var(--blue-mid) !important;
+      text-decoration: none !important;
+    }
+
+    /* ── Affiliate Ads ───────────────────────── */
+    .ad-slot {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+    .ad-slot a { display: block; line-height: 0; }
+    .ad-slot img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+    .ad-inline {
+      margin: 40px auto;
+      display: flex;
+      justify-content: center;
+    }
+    .ad-leaderboard-desktop { display: block; }
+    .ad-leaderboard-mobile { display: none; }
+
+    @media (max-width: 1024px) {
+      .page-layout {
+        grid-template-columns: 1fr;
+      }
+      .page-sidebar {
+        position: static;
+      }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+      .ad-leaderboard-desktop { display: none; }
+      .ad-leaderboard-mobile { display: block; }
+    }
   `;
 }
 

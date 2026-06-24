@@ -1219,7 +1219,7 @@ function generateCategoryPage(categoryName, posts, allCategories) {
 
 // ─── POST PAGE ────────────────────────────────────────────────────────────────
 
-function generatePostPage(post, blocks) {
+function generatePostPage(post, blocks, posts, categories) {
   const title = getProperty(post, "Title", "title");
   const summary = getProperty(post, "Summary", "text");
   const slug = getProperty(post, "Slug", "text");
@@ -1653,7 +1653,7 @@ async function generate() {
 
     console.log(`📝 Generating post: ${title}`);
     const blocks = await fetchPageBlocks(post.id);
-    const postHTML = generatePostPage(post, blocks);
+    const postHTML = generatePostPage(post, blocks, posts, categories);
     fs.writeFileSync(path.join(postsDir, `${slug}.html`), postHTML);
     console.log(`✅ Generated posts/${slug}.html`);
   }

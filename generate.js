@@ -1392,64 +1392,116 @@ function generatePostPage(post, blocks) {
     </div>
   </div>
 
-  <div class="post-container">
-    <a href="/" class="back-link">← Back to all posts</a>
-
-    <div class="post-body">
-      ${content}
+ <!-- Leaderboard ad — below post header, above content -->
+  <div class="ad-inline" style="padding: 24px 5% 0;">
+    <div class="ad-slot ad-leaderboard-desktop">
+      <a href='https://app.go54.com/signup?aff=ademuyiwao' target='_blank' rel='noopener sponsored'>
+        <img src='https://eu2.contabostorage.com/0929d2ec15194ce3b3cba7a318485ab8:go54/Affiliate/728x90/affilliates-1.3.webp'
+          alt='Go54 Web Hosting Nigeria' width='728' height='90' loading='lazy' />
+      </a>
     </div>
+    <div class="ad-slot ad-leaderboard-mobile">
+      <a href='https://app.go54.com/signup?aff=ademuyiwao' target='_blank' rel='noopener sponsored'>
+        <img src='https://eu2.contabostorage.com/0929d2ec15194ce3b3cba7a318485ab8:go54/Affiliate/320x100/affilliates-4.3.webp'
+          alt='Go54 Web Hosting Nigeria' width='320' height='100' loading='lazy' />
+      </a>
+    </div>
+  </div>
 
-    <!-- Author -->
-    <div class="author-card">
-      <div class="author-avatar">A</div>
-      <div>
-        <div class="author-name">Ademuyiwa Otubusin</div>
-        <div class="author-title">CEO, OAS Solutions Ltd</div>
+  <div class="page-layout">
+    <main class="page-main" id="main-content">
+      <a href="/" class="back-link">← Back to all posts</a>
+
+      <div class="post-body">
+        ${content}
       </div>
-    </div>
 
-    <!-- Share -->
-    <div class="share-section">
-      <div class="share-title">Share this post</div>
-      <div class="share-links">
-        <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=https://blog.oassolutions.com.ng/posts/${slug}" target="_blank" class="share-link">
-          𝕏 Share on X
-        </a>
-        <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://blog.oassolutions.com.ng/posts/${slug}" target="_blank" class="share-link">
-          in Share on LinkedIn
-        </a>
-        <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(title + " — https://blog.oassolutions.com.ng/posts/" + slug)}" target="_blank" class="share-link">
-          💬 Share on WhatsApp
-        </a>
+      <!-- Mid-article ad — after post body -->
+      <div class="ad-inline" style="margin: 40px 0;">
+        <div class="ad-slot ad-leaderboard-desktop">
+          <a href='https://app.go54.com/signup?aff=ademuyiwao' target='_blank' rel='noopener sponsored'>
+            <img src='https://eu2.contabostorage.com/0929d2ec15194ce3b3cba7a318485ab8:go54/Affiliate/336x280/affilliates-5.1.webp'
+              alt='Go54 Web Hosting Nigeria' width='336' height='280' loading='lazy' />
+          </a>
+        </div>
+        <div class="ad-slot ad-leaderboard-mobile">
+          <a href='https://app.go54.com/signup?aff=ademuyiwao' target='_blank' rel='noopener sponsored'>
+            <img src='https://eu2.contabostorage.com/0929d2ec15194ce3b3cba7a318485ab8:go54/Affiliate/300X250/affilliates-2.webp'
+              alt='Go54 Web Hosting Nigeria' width='300' height='250' loading='lazy' />
+          </a>
+        </div>
       </div>
-    </div>
 
-    <!-- Comments -->
-    <div class="comments-section">
-      <h2 class="comments-title">Comments</h2>
-      <p class="comments-subtitle">Sign in with GitHub to leave a comment</p>
-      <script src="https://giscus.app/client.js"
-        data-repo="tay4real/oas-blog"
-        data-repo-id="R_kgDOSib5Pw"
-        data-category="Announcements"
-        data-category-id="DIC_kwDOSib5P84C9dFj"
-        data-mapping="pathname"
-        data-strict="0"
-        data-reactions-enabled="1"
-        data-emit-metadata="0"
-        data-input-position="bottom"
-        data-theme="light"
-        data-lang="en"
-        crossorigin="anonymous"
-        async>
-      </script>
-    </div>
+      <!-- Author -->
+      <div class="author-card">
+        <div class="author-avatar">A</div>
+        <div>
+          <div class="author-name">Ademuyiwa Otubusin</div>
+          <div class="author-title">CEO, OAS Solutions Ltd</div>
+        </div>
+      </div>
 
-    <!-- More posts -->
-    <div class="more-posts">
-      <div class="more-posts-title">More from OAS Solutions Ltd</div>
-      <a href="/" class="more-posts-link">← View all posts</a>
-    </div>
+      <!-- Ad after author card -->
+      <div class="ad-inline" style="margin: 32px 0;">
+        <div class="ad-slot ad-leaderboard-desktop">
+          <a href='https://app.go54.com/signup?aff=ademuyiwao' target='_blank' rel='noopener sponsored'>
+            <img src='https://eu2.contabostorage.com/0929d2ec15194ce3b3cba7a318485ab8:go54/Affiliate/336x280/affilliates-5.2.webp'
+              alt='Go54 Web Hosting Nigeria' width='336' height='280' loading='lazy' />
+          </a>
+        </div>
+        <div class="ad-slot ad-leaderboard-mobile">
+          <a href='https://app.go54.com/signup?aff=ademuyiwao' target='_blank' rel='noopener sponsored'>
+            <img src='https://eu2.contabostorage.com/0929d2ec15194ce3b3cba7a318485ab8:go54/Affiliate/300X250/affilliates-3.webp'
+              alt='Go54 Web Hosting Nigeria' width='300' height='250' loading='lazy' />
+          </a>
+        </div>
+      </div>
+
+      <!-- Share -->
+      <div class="share-section">
+        <div class="share-title">Share this post</div>
+        <div class="share-links">
+          <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=https://blog.oassolutions.com.ng/posts/${slug}" target="_blank" class="share-link">
+            𝕏 Share on X
+          </a>
+          <a href="https://www.linkedin.com/sharing/share-offsite/?url=https://blog.oassolutions.com.ng/posts/${slug}" target="_blank" class="share-link">
+            in Share on LinkedIn
+          </a>
+          <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(title + " — https://blog.oassolutions.com.ng/posts/" + slug)}" target="_blank" class="share-link">
+            💬 Share on WhatsApp
+          </a>
+        </div>
+      </div>
+
+      <!-- Comments -->
+      <div class="comments-section">
+        <h2 class="comments-title">Comments</h2>
+        <p class="comments-subtitle">Sign in with GitHub to leave a comment</p>
+        <script src="https://giscus.app/client.js"
+          data-repo="tay4real/oas-blog"
+          data-repo-id="R_kgDOSib5Pw"
+          data-category="Announcements"
+          data-category-id="DIC_kwDOSib5P84C9dFj"
+          data-mapping="pathname"
+          data-strict="0"
+          data-reactions-enabled="1"
+          data-emit-metadata="0"
+          data-input-position="bottom"
+          data-theme="light"
+          data-lang="en"
+          crossorigin="anonymous"
+          async>
+        </script>
+      </div>
+
+      <!-- More posts -->
+      <div class="more-posts">
+        <div class="more-posts-title">More from OAS Solutions Ltd</div>
+        <a href="/" class="more-posts-link">← View all posts</a>
+      </div>
+    </main>
+
+    ${getSidebarHTML(posts, categories)}
   </div>
 
   ${getFooterHTML()}

@@ -1165,13 +1165,51 @@ function generateCategoryPage(categoryName, posts, allCategories) {
     </div>
   </div>
 
-  <div class="blog-content">
-    <!-- Other category pills so visitors can hop between categories -->
-    ${getCategoryNavHTML(allCategories, categoryName)}
-
-    <div class="posts-grid">
-      ${postCards}
+  <!-- Leaderboard ad — below hero, above content -->
+  <div class="ad-inline" style="padding: 24px 5% 0;">
+    <div class="ad-slot ad-leaderboard-desktop">
+      <a href='https://app.go54.com/signup?aff=ademuyiwao' target='_blank' rel='noopener sponsored'>
+        <img src='https://eu2.contabostorage.com/0929d2ec15194ce3b3cba7a318485ab8:go54/Affiliate/728x90/affilliates-1.1.webp'
+          alt='Go54 Web Hosting Nigeria' width='728' height='90' loading='lazy' />
+      </a>
     </div>
+    <div class="ad-slot ad-leaderboard-mobile">
+      <a href='https://app.go54.com/signup?aff=ademuyiwao' target='_blank' rel='noopener sponsored'>
+        <img src='https://eu2.contabostorage.com/0929d2ec15194ce3b3cba7a318485ab8:go54/Affiliate/320x100/affilliates-4.1.webp'
+          alt='Go54 Web Hosting Nigeria' width='320' height='100' loading='lazy' />
+      </a>
+    </div>
+  </div>
+
+  <div class="page-layout">
+    <main class="page-main" id="main-content">
+
+      <!-- Category pills -->
+      ${getCategoryNavHTML(allCategories, categoryName)}
+
+      <div class="posts-grid">
+        ${postCards}
+      </div>
+
+      <!-- Bottom ad — below posts grid -->
+      <div class="ad-inline" style="margin-top: 40px;">
+        <div class="ad-slot ad-leaderboard-desktop">
+          <a href='https://app.go54.com/signup?aff=ademuyiwao' target='_blank' rel='noopener sponsored'>
+            <img src='https://eu2.contabostorage.com/0929d2ec15194ce3b3cba7a318485ab8:go54/Affiliate/728x90/affilliates-1.2.webp'
+              alt='Go54 Web Hosting Nigeria' width='728' height='90' loading='lazy' />
+          </a>
+        </div>
+        <div class="ad-slot ad-leaderboard-mobile">
+          <a href='https://app.go54.com/signup?aff=ademuyiwao' target='_blank' rel='noopener sponsored'>
+            <img src='https://eu2.contabostorage.com/0929d2ec15194ce3b3cba7a318485ab8:go54/Affiliate/320x100/affilliates-4.2.webp'
+              alt='Go54 Web Hosting Nigeria' width='320' height='100' loading='lazy' />
+          </a>
+        </div>
+      </div>
+
+    </main>
+
+    ${getSidebarHTML(posts, allCategories, categoryName)}
   </div>
 
   ${getFooterHTML()}

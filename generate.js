@@ -247,8 +247,115 @@ function getBaseStyles() {
     .footer-logo-text span { color: var(--blue-light); }
 
     @media (max-width: 768px) {
-      .nav-links { display: none; }
+      .nav-links {
+        display: none;
+        position: fixed;
+        top: 68px;
+        left: 0;
+        right: 0;
+        background: rgba(255,255,255,0.98);
+        backdrop-filter: blur(12px);
+        flex-direction: column;
+        padding: 16px 5% 24px;
+        border-bottom: 1px solid var(--gray-light);
+        box-shadow: 0 8px 32px rgba(10,22,40,0.08);
+        z-index: 99;
+        gap: 4px;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a {
+        font-size: 16px !important;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--gray-light);
+        color: var(--blue-deep) !important;
+      }
+      .nav-links li:last-child a { border-bottom: none; }
+      .nav-cta {
+        margin-top: 8px;
+        text-align: center;
+        border-radius: 8px !important;
+        padding: 12px 20px !important;
+      }
       .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+
+    /* ── Hamburger button ────────────────────── */
+    .nav-hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+    .nav-hamburger:hover { background: var(--gray-light); }
+    .nav-hamburger span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: var(--blue-deep);
+      border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+      transform-origin: center;
+    }
+    .nav-hamburger.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    .nav-hamburger.open span:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+    .nav-hamburger.open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+    @media (max-width: 768px) {
+      .nav-hamburger { display: flex; }
+    }
+
+    /* ── Back to top button ──────────────────── */
+    .back-to-top {
+      position: fixed;
+      bottom: 32px;
+      right: 24px;
+      width: 44px;
+      height: 44px;
+      background: var(--blue-brand);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(30,86,176,0.3);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(12px);
+      transition: opacity 0.3s, visibility 0.3s, transform 0.3s, background 0.2s;
+      z-index: 200;
+    }
+    .back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .back-to-top:hover {
+      background: var(--blue-mid);
+      box-shadow: 0 6px 20px rgba(30,86,176,0.4);
+      transform: translateY(-2px);
+    }
+    .back-to-top svg {
+      width: 20px;
+      height: 20px;
+      stroke: white;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     /* ── Page layout with sidebar ───────────── */
@@ -413,13 +520,56 @@ function getNavHTML() {
         <div class="logo-mark">OAS</div>
         <span class="logo-text">OAS Solutions <span>Ltd</span></span>
       </a>
-      <ul class="nav-links">
+      <ul class="nav-links" id="nav-links">
         <li><a href="https://oassolutions.com.ng">Home</a></li>
         <li><a href="https://oassolutions.com.ng/#products">Products</a></li>
         <li><a href="https://okride.com.ng">OkRide</a></li>
         <li><a href="https://oassolutions.com.ng/#contact" class="nav-cta">Contact</a></li>
       </ul>
+      <button
+        class="nav-hamburger"
+        id="nav-hamburger"
+        aria-label="Toggle navigation menu"
+        aria-expanded="false"
+        aria-controls="nav-links"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
     </nav>
+
+    <script>
+      (function() {
+        const hamburger = document.getElementById('nav-hamburger');
+        const navLinks = document.getElementById('nav-links');
+        if (!hamburger || !navLinks) return;
+
+        hamburger.addEventListener('click', function() {
+          const isOpen = navLinks.classList.toggle('open');
+          hamburger.classList.toggle('open', isOpen);
+          hamburger.setAttribute('aria-expanded', isOpen);
+        });
+
+        // Close menu when a nav link is clicked
+        navLinks.querySelectorAll('a').forEach(function(link) {
+          link.addEventListener('click', function() {
+            navLinks.classList.remove('open');
+            hamburger.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
+          });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+          if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+            navLinks.classList.remove('open');
+            hamburger.classList.remove('open');
+            hamburger.setAttribute('aria-expanded', 'false');
+          }
+        });
+      })();
+    </script>
   `;
 }
 
@@ -924,7 +1074,30 @@ function generateIndexPage(posts) {
 
   ${getFooterHTML()}
 
+  <!-- Back to top button -->
+  <button class="back-to-top" id="back-to-top" aria-label="Back to top">
+    <svg viewBox="0 0 24 24">
+      <polyline points="18 15 12 9 6 15"/>
+    </svg>
+  </button>
+
   <script>
+    // ── Back to top ───────────────────────────────────────────────────────────
+    (function() {
+      const btn = document.getElementById('back-to-top');
+      if (!btn) return;
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 400) {
+          btn.classList.add('visible');
+        } else {
+          btn.classList.remove('visible');
+        }
+      }, { passive: true });
+      btn.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    })();
+
     // ── Embedded search index (generated at build time) ──────────────────────
     const SEARCH_INDEX = ${JSON.stringify(searchIndex)};
 
@@ -1543,6 +1716,31 @@ function generatePostPage(post, blocks, posts, categories) {
   </div>
 
   ${getFooterHTML()}
+
+  <!-- Back to top button -->
+  <button class="back-to-top" id="back-to-top" aria-label="Back to top">
+    <svg viewBox="0 0 24 24">
+      <polyline points="18 15 12 9 6 15"/>
+    </svg>
+  </button>
+
+  <script>
+    // ── Back to top ───────────────────────────────────────────────────────────
+    (function() {
+      const btn = document.getElementById('back-to-top');
+      if (!btn) return;
+      window.addEventListener('scroll', function() {
+        if (window.scrollY > 400) {
+          btn.classList.add('visible');
+        } else {
+          btn.classList.remove('visible');
+        }
+      }, { passive: true });
+      btn.addEventListener('click', function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    })();
+  </script>
 </body>
 </html>`;
 }

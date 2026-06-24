@@ -1224,14 +1224,14 @@ function generatePostPage(post, blocks, posts, categories) {
   const summary = getProperty(post, "Summary", "text");
   const slug = getProperty(post, "Slug", "text");
   const date = getProperty(post, "Date", "date");
-  const categories = getProperty(post, "Category", "multi_select");
+  const postCategories = getProperty(post, "Category", "multi_select");
   const coverImage = getProperty(post, "Cover Image URL", "text");
   const content = blocksToHTML(blocks);
   const ogImage = coverImage || "https://oassolutions.com.ng/og-default.png";
   const postUrl = `https://blog.oassolutions.com.ng/posts/${slug}`;
 
   // Build category tag links for the post header
-  const categoryTagsHTML = categories.map((cat) => {
+  const categoryTagsHTML = postCategories.map((cat) => {
     const catSlug = cat.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
     return `<a href="/category/${catSlug}/" class="post-category-tag">${cat}</a>`;
   }).join("");

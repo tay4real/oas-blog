@@ -262,19 +262,28 @@ function getBaseStyles() {
         z-index: 99;
         gap: 4px;
       }
-      .nav-links.open { display: flex; }
+     .nav-links.open { display: flex; }
+      .nav-links li {
+        width: 100%;
+        border-bottom: 1px solid var(--gray-light);
+      }
+      .nav-links li:last-child {
+        border-bottom: none;
+        margin-top: 8px;
+      }
       .nav-links a {
         font-size: 16px !important;
-        padding: 12px 0;
-        border-bottom: 1px solid var(--gray-light);
+        padding: 14px 0;
+        display: block;
+        width: 100%;
         color: var(--blue-deep) !important;
+        border-bottom: none !important;
       }
-      .nav-links li:last-child a { border-bottom: none; }
       .nav-cta {
-        margin-top: 8px;
         text-align: center;
         border-radius: 8px !important;
         padding: 12px 20px !important;
+        display: block;
       }
       .footer-inner { flex-direction: column; align-items: flex-start; }
     }

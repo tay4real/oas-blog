@@ -853,34 +853,73 @@ function generateIndexPage(posts) {
     </div>
   </div>
 
-  <div class="blog-content">
-    <div class="section-label">Latest Posts</div>
-    <h2 class="section-title">All articles</h2>
+  <div class="blog-hero" style="margin-bottom:0;">
+  </div>
 
-    <!-- Search bar -->
-    <div class="search-wrap">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-        <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/>
-      </svg>
-      <input
-        type="search"
-        id="blog-search"
-        placeholder="Search articles by title, category or keyword…"
-        aria-label="Search articles"
-        autocomplete="off"
-      />
+  <!-- Leaderboard ad — below hero, above content -->
+  <div class="ad-inline" style="padding: 24px 5% 0;">
+    <div class="ad-slot ad-leaderboard-desktop">
+      <a href='https://app.go54.com/signup?aff=ademuyiwao' target='_blank' rel='noopener sponsored'>
+        <img src='https://eu2.contabostorage.com/0929d2ec15194ce3b3cba7a318485ab8:go54/Affiliate/728x90/affilliates-1.1.webp'
+          alt='Go54 Web Hosting Nigeria' width='728' height='90' loading='lazy' />
+      </a>
     </div>
-
-    <!-- Category filter pills -->
-    ${getCategoryNavHTML(categories)}
-
-    <!-- Live search results (hidden until user types) -->
-    <div id="search-results" role="region" aria-live="polite" aria-label="Search results"></div>
-
-    <!-- Static posts grid (hidden while searching) -->
-    <div id="posts-grid" class="posts-grid">
-      ${postCards}
+    <div class="ad-slot ad-leaderboard-mobile">
+      <a href='https://app.go54.com/signup?aff=ademuyiwao' target='_blank' rel='noopener sponsored'>
+        <img src='https://eu2.contabostorage.com/0929d2ec15194ce3b3cba7a318485ab8:go54/Affiliate/320x100/affilliates-4.1.webp'
+          alt='Go54 Web Hosting Nigeria' width='320' height='100' loading='lazy' />
+      </a>
     </div>
+  </div>
+
+  <div class="page-layout">
+    <main class="page-main" id="main-content">
+      <div class="section-label">Latest Posts</div>
+      <h2 class="section-title">All articles</h2>
+
+      <!-- Search bar -->
+      <div class="search-wrap">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input
+          type="search"
+          id="blog-search"
+          placeholder="Search articles by title, category or keyword…"
+          aria-label="Search articles"
+          autocomplete="off"
+        />
+      </div>
+
+      <!-- Category filter pills -->
+      ${getCategoryNavHTML(categories)}
+
+      <!-- Live search results (hidden until user types) -->
+      <div id="search-results" role="region" aria-live="polite" aria-label="Search results"></div>
+
+      <!-- Static posts grid (hidden while searching) -->
+      <div id="posts-grid" class="posts-grid">
+        ${postCards}
+      </div>
+
+      <!-- Mid-index ad — below posts grid -->
+      <div class="ad-inline" style="margin-top:40px;">
+        <div class="ad-slot ad-leaderboard-desktop">
+          <a href='https://app.go54.com/signup?aff=ademuyiwao' target='_blank' rel='noopener sponsored'>
+            <img src='https://eu2.contabostorage.com/0929d2ec15194ce3b3cba7a318485ab8:go54/Affiliate/728x90/affilliates-1.2.webp'
+              alt='Go54 Web Hosting Nigeria' width='728' height='90' loading='lazy' />
+          </a>
+        </div>
+        <div class="ad-slot ad-leaderboard-mobile">
+          <a href='https://app.go54.com/signup?aff=ademuyiwao' target='_blank' rel='noopener sponsored'>
+            <img src='https://eu2.contabostorage.com/0929d2ec15194ce3b3cba7a318485ab8:go54/Affiliate/320x100/affilliates-4.2.webp'
+              alt='Go54 Web Hosting Nigeria' width='320' height='100' loading='lazy' />
+          </a>
+        </div>
+      </div>
+    </main>
+
+    ${getSidebarHTML(posts, categories)}
   </div>
 
   ${getFooterHTML()}

@@ -253,8 +253,8 @@ function getBaseStyles() {
         top: 68px;
         left: 0;
         right: 0;
-        background: rgba(255,255,255,0.98);
-        backdrop-filter: blur(12px);
+        background: rgba(255,255,255,1);
+      backdrop-filter: blur(12px);
         flex-direction: column;
         padding: 16px 5% 24px;
         border-bottom: 1px solid var(--gray-light);
@@ -270,6 +270,7 @@ function getBaseStyles() {
       .nav-links li:last-child {
         border-bottom: none;
         margin-top: 8px;
+        padding-bottom: 8px;
       }
       .nav-links a {
         font-size: 16px !important;
@@ -283,7 +284,8 @@ function getBaseStyles() {
         text-align: center;
         border-radius: 8px !important;
         padding: 12px 20px !important;
-        display: block;
+        display: inline-block !important;
+        width: auto !important;
       }
       .footer-inner { flex-direction: column; align-items: flex-start; }
     }
